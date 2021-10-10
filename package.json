@@ -1,0 +1,29 @@
+{
+  "name": "multicore-task",
+  "version": "1.0.0",
+  "description": "Task that runs in another process",
+  "main": "lib/index.js",
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "build:watch": "ts-watch",
+    "poc": "node --experimental-specifier-resolution=node --max-old-space-size=16384 poc/proofOfConcept.js",
+    "poc:failed": "node --experimental-specifier-resolution=node --max-old-space-size=16384 poc/proofOfFailedConcept.js"
+  },
+  "author": "Michał Baranowski",
+  "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/preterer/game-cards.git"
+  },
+  "bugs": {
+    "url": "https://github.com/preterer/game-cards/issues"
+  },
+  "homepage": "https://github.com/preterer/game-cards#readme",
+  "dependencies": {},
+  "devDependencies": {
+    "@types/node": "^16.10.3",
+    "ts-watch": "^1.0.8",
+    "typescript": "^4.4.3"
+  }
+}
