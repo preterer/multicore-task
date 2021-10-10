@@ -1,5 +1,5 @@
 {
-  "name": "multicore-task",
+  "name": "@preterer/multicore-task",
   "version": "1.0.0",
   "description": "Task that runs in another process",
   "main": "lib/index.js",
@@ -14,12 +14,12 @@
   "license": "MIT",
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/preterer/game-cards.git"
+    "url": "git+git@github.com:preterer/multicore-task.git"
   },
   "bugs": {
-    "url": "https://github.com/preterer/game-cards/issues"
+    "url": "https://github.com/preterer/multicore-task/issues"
   },
-  "homepage": "https://github.com/preterer/game-cards#readme",
+  "homepage": "https://github.com/preterer/multicore-task#readme",
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^16.10.3",
