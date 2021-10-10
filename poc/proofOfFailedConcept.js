@@ -1,4 +1,4 @@
-import { Task } from "../lib";
+import { runTask } from "../lib";
 
 const amount = process.env.AMOUNT ? parseInt(process.env.AMOUNT) : 10000;
 
@@ -15,14 +15,14 @@ async function useTask() {
 
   const result = await Promise.all(
     arr.map((_, j) =>
-      new Task(
+      runTask(
         function () {
           const x = j * 1234;
           const y = (j + 123) * 43;
           return x + y + random;
         },
         { j, random }
-      ).run()
+      )
     )
   );
 

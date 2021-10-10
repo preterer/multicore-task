@@ -1,4 +1,6 @@
-import { Task } from "../lib";
+import dayjs from "dayjs";
+
+import { runTask } from "../lib";
 
 const amount = process.env.AMOUNT ? parseInt(process.env.AMOUNT) : 10;
 
@@ -15,20 +17,23 @@ async function useTask() {
 
   const result = await Promise.all(
     arr.map((_, j) =>
-      new Task(
+      runTask(
         function () {
           let result = 0;
           for (let i = 1; i < 1000000000; i++) {
             const x = i % 64390;
             const y = i % 12315;
+            // if (i === 55435 && j === 2) {
+            //   throw new Error("TEST :)");
+            // }
             result += x + y + j + random;
           }
-          return result;
+          return { result, date: dayjs().format("YYYY-MM-DD HH:mm:ss.SSS") };
         },
-        { j, random }
-      ).run()
+        { j, random, dayjs: { __useRequire: true } }
+      )
     )
-  );
+  ).catch((err) => err.message);
 
   const end = Date.now();
   console.log("TIME TASK: ", end - start);
@@ -38,21 +43,15 @@ async function useTask() {
 async function conventional() {
   const start = Date.now();
   const result = await Promise.all(
-    arr.map(
-      (_, j) =>
-        // it's actually even slower than without that.
-        new Promise((resolve) =>
-          setTimeout(() => {
-            let result = 0;
-            for (let i = 1; i < 1000000000; i++) {
-              const x = i % 64390;
-              const y = i % 12315;
-              result += x + y + j + random;
-            }
-            resolve(result);
-          })
-        )
-    )
+    arr.map((_, j) => {
+      let result = 0;
+      for (let i = 1; i < 1000000000; i++) {
+        const x = i % 64390;
+        const y = i % 12315;
+        result += x + y + j + random;
+      }
+      return { result, date: dayjs().format("YYYY-MM-DD HH:mm:ss.SSS") };
+    })
   );
 
   const end = Date.now();

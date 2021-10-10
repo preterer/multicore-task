@@ -23,6 +23,7 @@
   "dependencies": {},
   "devDependencies": {
     "@types/node": "^16.10.3",
+    "dayjs": "^1.10.7",
     "ts-watch": "^1.0.8",
     "typescript": "^4.4.3"
   }

@@ -1,36 +1,30 @@
 import { Worker } from "worker_threads";
 
 const WORKER_PATH = "./lib/worker.js";
-console.log("PATH:", WORKER_PATH);
 
-export class Task<T> {
-  private task: String;
+export function runTask<T>(
+  taskFunction: () => T,
+  taskArgs?: Record<
+    string,
+    { __useRequire: true; __requireParam?: string } | any
+  >
+): Promise<T> {
+  const worker = new Worker(WORKER_PATH);
+  const task = prepareTaskBody(taskFunction);
+  const resultPromise = new Promise<T>((resolve, reject) =>
+    worker.on("message", (result: { result?: T; error?: any }) => {
+      worker.unref();
+      if (result?.error) {
+        return reject(result.error);
+      }
+      resolve(result?.result);
+    })
+  );
+  worker.postMessage({ task, taskArgs });
+  return resultPromise;
+}
 
-  private worker: Worker;
-
-  constructor(taskFunction: () => T, private taskArgs?: Record<string, any>) {
-    this.worker = new Worker(WORKER_PATH);
-    this.task = this.prepareTaskBody(taskFunction);
-  }
-
-  public run(): Promise<T> {
-    const resultPromise = new Promise<T>((resolve, reject) =>
-      this.worker.on("message", (result: { result?: T; error?: any }) => {
-        if (result?.error) {
-          return reject(result.error);
-        }
-        resolve(result?.result);
-      })
-    );
-    this.worker.postMessage({ task: this.task, taskArgs: this.taskArgs });
-    return resultPromise.then((result) => {
-      this.worker.unref();
-      return result;
-    });
-  }
-
-  private prepareTaskBody(taskFunction: () => T): string {
-    const body = taskFunction.toString();
-    return body.slice(body.indexOf("{") + 1, -1);
-  }
+function prepareTaskBody(taskFunction: () => any): string {
+  const body = taskFunction.toString();
+  return body.slice(body.indexOf("{") + 1, -1);
 }

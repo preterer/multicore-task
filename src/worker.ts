@@ -13,6 +13,31 @@ parentPort.on(
   }
 );
 
-function runTask(task: string, args: Record<string, any> = {}): any {
-  return new Function(...Object.keys(args), task)(...Object.values(args));
+function runTask(task: string, args: Record<string, any> | undefined): any {
+  return getArgumentValues(args).then((values) => {
+    return new Function(...getArguments(args), task)(...values);
+  });
+}
+
+function getArguments(args: Record<string, any> | undefined): string[] {
+  if (!args) {
+    return [];
+  }
+  return Object.keys(args);
+}
+
+function getArgumentValues(
+  args: Record<string, any> | undefined
+): Promise<any[]> {
+  return Promise.all(
+    getArguments(args).map((parameter) => {
+      const value = args[parameter];
+      if (value && value.__useRequire) {
+        return import(parameter).then(
+          (importedModule) => importedModule[value.__requireParam || "default"]
+        );
+      }
+      return value;
+    })
+  );
 }
