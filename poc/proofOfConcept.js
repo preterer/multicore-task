@@ -25,7 +25,7 @@ async function useTask() {
           }
           return result;
         },
-        { parser: parseInt, args: { j, random } }
+        { j, random }
       ).run()
     )
   );

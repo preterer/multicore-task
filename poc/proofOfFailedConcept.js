@@ -21,7 +21,7 @@ async function useTask() {
           const y = (j + 123) * 43;
           return x + y + random;
         },
-        { parser: parseInt, args: { j, random } }
+        { j, random }
       ).run()
     )
   );
